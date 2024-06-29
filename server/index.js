@@ -15,4 +15,4 @@ myapp.get('/',(req, res)=>{
 myapp.use(Auth);
 myapp.listen(3000,()=>{console.log('listening on port 4000' )})
 
-module.exports = myapp;
+export default myapp;
