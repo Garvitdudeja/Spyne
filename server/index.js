@@ -13,4 +13,6 @@ myapp.get('/',(req, res)=>{
     res.json({"success":"server Running"});
 })
 myapp.use(Auth);
-myapp.listen(4001,()=>{console.log('listening on port 4000' )})
+myapp.listen(3000,()=>{console.log('listening on port 4000' )})
+
+module.exports = app;
