@@ -80,7 +80,7 @@ const SignUp = (props) => {
                         }}
                       >
                         {({ open }) => (
-                          <button className="" onClick={open}>
+                          <button className="" type="button" onClick={open}>
                             <Image
                               src={data?.image ?? images.doctorIcon}
                               height={100}

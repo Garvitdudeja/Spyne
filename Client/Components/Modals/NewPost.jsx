@@ -66,7 +66,7 @@ const NewPost = (props) => {
               }}
             >
               {({ open }) => (
-                <button className="btn btn-primary" onClick={open}>
+                <button className="btn btn-primary" type="button" onClick={open}>
                   Upload an Image
                 </button>
               )}
