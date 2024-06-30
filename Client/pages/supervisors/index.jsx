@@ -88,10 +88,10 @@ const SupervisorListing = () => {
         <div className="col-md-12">
           <div className="shiftRequestFilter">
             <div>
-              <h3 className="headingGreen20 mb-0">All Supervisors </h3>
+              <h3 className="headingGreen20 mb-0">All Customer </h3>
               <p className="text14 mb-0">
-                {hanldeWholeNumbers(supervisorListData?.totalRecords)}{" "}
-                Supervisors
+                {hanldeWholeNumbers(supervisorListData?.totalUsers)}{" "}
+                Users
               </p>
             </div>
             <div className="supervisorRight">
@@ -233,7 +233,7 @@ const SupervisorListing = () => {
                     {" "}
                     <tr>
                       <td colSpan="5" className="text-center">
-                        No Supervisor found.
+                        No User found.
                       </td>
                     </tr>
                   </>
