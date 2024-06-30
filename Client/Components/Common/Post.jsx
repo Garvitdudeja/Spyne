@@ -44,7 +44,7 @@ const Post = (props) => {
   return (
     <div className="card mb-3 position-relative">
       {/* Delete Icon */}
-     {(authSelector?.userInfo?.data?.data?._id==data?.userId?._id ||authSelector?.userInfo?.data?.data?._id==data?.userId) && <button
+     {props?.isClient && (authSelector?.userInfo?.data?.data?._id==data?.userId?._id ||authSelector?.userInfo?.data?.data?._id==data?.userId) && <button
         className="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2"
         onClick={() => {
           handlePostDelete(data?._id);

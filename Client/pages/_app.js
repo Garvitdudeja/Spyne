@@ -34,7 +34,7 @@ return (
       {isClient && authSelector?.isLoggedIn ? (
         <>
           <div className={`mainOuter ${sidebarOpen ? "sidebarClose": ""}`}>
-          <Sidebar setSidebarOpen={setSidebarOpen} /> <div className='contentMain'> <Navbar /> 
+          <Sidebar setSidebarOpen={setSidebarOpen} /> <div className='contentMain'> <Navbar isClient={isClient} /> 
           <Component {...pageProps} isClient={isClient}/>
           </div> 
           </div> 

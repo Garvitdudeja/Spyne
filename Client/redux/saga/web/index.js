@@ -276,7 +276,7 @@ function* updateUser(action) {
     delete dataToSend.id;
     const resp = yield call(
       ApiClient.patch,
-      (action.url = ApiPath.WebApiPath.UPDATE_USER_BY_ID  + action.payload?.id),
+      (action.url = ApiPath.WebApiPath.UPDATE_USER_BY_ID),
       (action.payload)
     );
     if (resp.status) {
@@ -288,7 +288,8 @@ function* updateUser(action) {
     }
   } catch (e) {
     yield put(onErrorStopLoad());
-    toast.error(e?.response?.data?.msg);
+    console.log(e?.response?.data?.error,"eeee")
+    toast.error(e?.response?.data?.error);
   }
 }
 

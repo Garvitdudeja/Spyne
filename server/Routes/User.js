@@ -2,7 +2,6 @@ import express from "express";
 import Auth from "../middleware/Auth.js";
 import {
   deleteUser,
-  getLoggedInInfo,
   getUserById,
   getUserList,
   logoutUser,
@@ -11,7 +10,6 @@ import {
 
 const router = express.Router();
 
-router.get("/user/info", Auth, getLoggedInInfo);
 
 router.get("/user/:id", Auth, getUserById);
 

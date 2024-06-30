@@ -114,7 +114,7 @@ const CustomerView = (props) => {
               <>
                 <button
                   className="editBtnRounded me-2"
-                  onClick={() => router.push("/editProfile?id=" + UserID)}
+                  onClick={() => router.push("/editProfile")}
                 >
                   <Image
                     src={images.penIconGreen}
@@ -147,7 +147,7 @@ const CustomerView = (props) => {
                 <div className="customerDetailIconOuter">
                   <Image
                     src={
-                      data?.user_profiles?.profile_photo ?? images.customerImg
+                      data?.image ?? images.customerImg
                     }
                     width={50}
                     height={20}

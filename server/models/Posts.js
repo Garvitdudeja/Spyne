@@ -7,7 +7,7 @@ const PostsSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users",
   },
-  // tags: [String],
+  tags: [String],
 },{
   timestamps: true,
 });

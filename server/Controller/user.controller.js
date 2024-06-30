@@ -16,7 +16,6 @@ const getLoggedInInfo = async (req, res) => {
 
   const getUserById = async (req, res) => {
     try {
-      console.log(req.params)
       const id = req.params.id;
       if(!id){
         return res.status(400).json({message:"Enter a valid User Id !"})
@@ -60,6 +59,7 @@ const getLoggedInInfo = async (req, res) => {
             userName: 1,
             email: 1,
             posts: 1,
+            image: 1
           }
         }
       ];

@@ -16,8 +16,9 @@ const addPost = async (req, res) => {
       images,
       tags,
     });
-    const tagsList = tags.map((item) => ({ postId: post._id, tag: item }));
-    const tagsResponse = await TagsModel.create(tagsList);
+    const tagsList = tags?.map((item) => ({ postId: post._id, tag: item }));
+    if(Array.isArray(tagsList) && tagsList.length > 0) {
+    const tagsResponse = await TagsModel.create(tagsList);}
     await post.populate("userId");
     return res.status(200).json(post);
   } catch (error) {
@@ -173,18 +174,40 @@ const searchWithTag = async (req, res) => {
       ? { tag: { $regex: search, $options: "i" } }
       : {};
 
-    const userData = await TagsModel.find(searchQuery)
-      .populate({
-        path: "postId",  // Assuming postId is the field referencing Posts model
-        model: "Posts",  // Name of the model to populate
-        options: { sort: { createdAt: -1 }, skip: (pageNumber - 1) * limitNumber, limit: limitNumber }
-      });
+    // Aggregation pipeline to fetch and format posts
+    const aggregationPipeline = [
+      { $match: searchQuery },
+      { $sort: { createdAt: -1 } }, 
+      { $skip: (pageNumber - 1) * limitNumber }, 
+      { $limit: limitNumber }, 
+      {
+        $lookup: {
+          from: "posts", 
+          localField: "postId", 
+          foreignField: "_id",
+          as: "post" 
+        }
+      },
+      { $unwind: "$post" },
+      {
+        $project: {
+          _id: "$post._id",
+          message: "$post.message",
+          images: "$post.images",
+          tags: "$post.tags",
+          createdAt: "$post.createdAt",
+          updatedAt: "$post.updatedAt"
+        }
+      }
+    ];
+
+    const postsData = await TagsModel.aggregate(aggregationPipeline);
 
     const totalPosts = await TagsModel.countDocuments(searchQuery);
     const totalPages = Math.ceil(totalPosts / limitNumber);
-
+    
     return res.status(200).json({
-      data: userData,
+      data: postsData,
       totalPosts,
       totalPages,
       currentPage: pageNumber,
@@ -194,6 +217,8 @@ const searchWithTag = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+
+
 
 
 export {

@@ -11,6 +11,7 @@ const ApiPath = {
       DASHBOARD_ADMIN: "/post",
       USERS: "/users",
       GET_USER_BY_ID: "/user/",
+      UPDATE_USER_BY_ID: "user/info",
 
 
 
@@ -26,7 +27,6 @@ const ApiPath = {
       GET_CUSTOMER_LIST: "users/customer/list",
       DELETE_A_CUSTOMER: "users/",
       SEND_USER_NOTIFICATION : "notifications/custom_notification",
-      UPDATE_USER_BY_ID: "user_profiles/",
       ATTACHMENT_UPLOAD: "user_photos/upload",
       GET_SUPERVISOR_LIST: "users/supervisor/list",
       GET_STAFF_LIST: "users/employee/list",

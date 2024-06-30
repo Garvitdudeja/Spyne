@@ -7,12 +7,15 @@ import { useDispatch } from "react-redux";
 import Spinner from "@/Components/Common/Spinner";
 import { useWebSelector } from "@/redux/selector/web";
 import { toast } from "react-toastify";
+import { CldUploadWidget } from "next-cloudinary";
+import { useAuthSelector } from "@/redux/selector/auth";
 const editProfile = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [data, setData] = useState();
-  const webData = useWebSelector()
+  const webData = useWebSelector();
   const id = router.query.id;
+  const authSelector = useAuthSelector()
   const getUserAction = (id) => {
     dispatch(
       getUserByID({
@@ -20,62 +23,48 @@ const editProfile = (props) => {
         cb(res) {
           const temp = res;
           setData({
-            first_name: temp?.user_profiles?.first_name,
-            last_name: temp?.user_profiles?.last_name,
-            address: temp?.user_profiles?.address,
+            userName: temp?.userName,
+            phoneNumber: temp?.phoneNumber,
             email: temp?.email,
-            profile_photo: temp?.user_profiles?.profile_photo ,
-            id: temp?.id,
-            user_role: temp?.user_roles?.role_id 
+            oldEmail: temp?.email,
+            image: temp?.image,
+            _id: temp?._id,
           });
         },
       })
     );
   };
   useEffect(() => {
-    if (id) getUserAction(id);
-  }, [id]);
+    if (authSelector?.userInfo?.data?.data?._id) getUserAction(authSelector?.userInfo?.data?.data?._id);
+  }, [authSelector?.userInfo?.data?.data?._id]);
   const handleEditProfile = (event, data) => {
     event.preventDefault();
-    if(!data?.profile_photo){
-      delete data.profile_photo
+    if (!data?.profile_photo) {
+      delete data.profile_photo;
     }
-    dispatch(updateUser({ ...data, cb(res) {
-      if(data?.user_role == "4"){
-      toast.success("Staff Updated Sucessfully!")
-        router.push("/staff")
-        return
-      }
-      if(data?.user_role == "2"){
-          toast.success("Supervisor Updated Sucessfully!")
-          router.push("/staff")
-          return
+    if(data?.email == data?.oldEmail){
+      delete data.email;
+    }
+    dispatch(
+      updateUser({
+        ...data,
+        cb(res) {
+            toast.success("User Updated Sucessfully!");
+            router.push("/user/"+data?._id);
         }
-      toast.success("Customer Updated Sucessfully!")
-      router.push("/customers/"+res?.id)
-    } }));
+      })
+    );
   };
-  const handleImageUpload = (event) => {
-    try {
-      const params = {
-        photo: event.target.files[0],
-      };
-      dispatch(
-        ImageUpload({
-          ...params,
-          cb(res) {
-            setData((prev) => ({ ...prev, profile_photo: res?.url }));
-          },
-        })
-      );
-    } catch (e) {
-    }
-  };
+
   return (
     <>
       <div className="commonHeader mb-3">
         <div className="hospitalDetail">
-          <div className="backArrowBtn" onClick={() => router.back()} alt="leftArrowImg" >
+          <div
+            className="backArrowBtn"
+            onClick={() => router.back()}
+            alt="leftArrowImg"
+          >
             <Image src={images.leftArrowLong} />
           </div>
           <div className="hospitalDetailOuter">
@@ -91,7 +80,7 @@ const editProfile = (props) => {
           <div className="position-relative">
             {props?.isClient && (
               <Image
-                src={data?.profile_photo?? images.customerImg}
+                src={data?.image ?? images.customerImg}
                 className="customerProfileImg"
                 alt="customerImg"
                 width={100}
@@ -100,21 +89,25 @@ const editProfile = (props) => {
             )}
 
             <div className="pencilImg">
-              <input
-                type="file"
-                name="file-input"
-                id="file-input"
-                className="customerInput w-100"
-                onChange={(event) => {
-                  handleImageUpload(event);
-                }}
-              />
-              <label className="customerInputLable cursor" for="file-input">
-                <Image
+            <CldUploadWidget
+              uploadPreset="ml_default"
+              onSuccess={(results) => {
+                setData((prev) => ({ ...prev, image: results.info.secure_url }));
+              }}
+            >
+              {({ open }) => (
+                <button className="btn btn-primary" type="button" onClick={open}>
+                                  <Image
                   src={images.pencilImg}
                   className="pencil "
                   alt="pencilImg"
                 />
+                </button>
+              )}
+            </CldUploadWidget>
+
+              <label className="customerInputLable cursor" for="file-input">
+
               </label>
             </div>
           </div>
@@ -135,7 +128,7 @@ const editProfile = (props) => {
           <div className="row my-4">
             <div className="col-md-12">
               <div className="shiftReqDescription">
-                <p className="text12 mb-0">First Name</p>
+                <p className="text12 mb-0">Name</p>
                 <div className="editProfileInputOuter">
                   <Image
                     src={images.userIconImg}
@@ -146,43 +139,19 @@ const editProfile = (props) => {
                     type="text"
                     className="filterInput w-100"
                     placeholder="John Smith"
-                    value={data?.first_name}
+                    value={data?.userName}
                     required
                     onChange={(event) =>
                       setData((prev) => ({
                         ...prev,
-                        first_name: event.target.value,
+                        userName: event.target.value,
                       }))
                     }
                   />
                 </div>
               </div>
             </div>
-            <div className="col-md-12 mt-2">
-              <div className="shiftReqDescription">
-                <p className="text12 mb-0">Last Name</p>
-                <div className="editProfileInputOuter">
-                  <Image
-                    src={images.userIconImg}
-                    className="userIconImg"
-                    alt="userIcon"
-                  />
-                  <input
-                    type="text"
-                    required
-                    className="filterInput w-100"
-                    placeholder="John Smith"
-                    value={data?.last_name}
-                    onChange={(event) =>
-                      setData((prev) => ({
-                        ...prev,
-                        last_name: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-            </div>
+
             <div className="col-md-12 mt-2">
               <div className="shiftReqDescription">
                 <p className="text12 mb-0">Email Address</p>
@@ -210,23 +179,23 @@ const editProfile = (props) => {
             </div>
             <div className="col-md-12 mt-2">
               <div className="shiftReqDescription">
-                <p className="text12 mb-0">Address</p>
+                <p className="text12 mb-0">Phone Number</p>
                 <div className="editProfileInputOuter">
                   <Image
-                    src={images.hashtagImg}
+                    src={images.permissionImg}
                     className="userIconImg"
                     alt="userIcon"
                   />
                   <input
-                    type="text"
-                    className="filterInput w-100"
-                    placeholder="71445 Evie Turnpike HaydenPass 98676"
+                    type="number"
                     required
-                    value={data?.address}
+                    className="filterInput w-100"
+                    placeholder="Johnsmith@gmail.com"
+                    value={data?.phoneNumber}
                     onChange={(event) =>
                       setData((prev) => ({
                         ...prev,
-                        address: event.target.value,
+                        phoneNumber: event.target.value,
                       }))
                     }
                   />
@@ -234,15 +203,28 @@ const editProfile = (props) => {
               </div>
             </div>
             <div className="editSkilsBtnInner">
-            <div className="col-md-12 mt-4">
-              <button className={`profileBtn ${webData.loading ? "inactiveBtn":""}`} type="submit" >
-                {webData?.loading && <Spinner className="pr-2"/>}
-                Save Changes
-              </button>
-             {data?.user_role == 4 &&  <button className={`profileBtn inactiveBtn ms-3`} type="button" onClick={()=>{router.push("/staff/skills/"+data?.id)}} >
-                Edit Skills
-              </button>}
-            </div>
+              <div className="col-md-12 mt-4">
+                <button
+                  className={`profileBtn ${
+                    webData.loading ? "inactiveBtn" : ""
+                  }`}
+                  type="submit"
+                >
+                  {webData?.loading && <Spinner className="pr-2" />}
+                  Save Changes
+                </button>
+                {data?.user_role == 4 && (
+                  <button
+                    className={`profileBtn inactiveBtn ms-3`}
+                    type="button"
+                    onClick={() => {
+                      router.push("/staff/skills/" + data?.id);
+                    }}
+                  >
+                    Edit Skills
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

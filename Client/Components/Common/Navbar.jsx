@@ -10,9 +10,10 @@ import { useAuthSelector } from '@/redux/selector/auth'
 
 
 
-const Navbar = () => {
+const Navbar = (props) => {
   const dispatch = useDispatch()
   const authSelector = useAuthSelector()
+  console.log(authSelector)
   const pathname = usePathname()
   const router = useRouter()
   const handleLogout = ()=>{
@@ -46,11 +47,10 @@ const Navbar = () => {
         </li> */}
         <li>
         
-         <Link href="/user">
-         <button className="profileBtn" onClick={()=>{router.push('/user/'+authSelector?.userInfo?.data?.data?._id)}}>
+        {props?.isClient &&  <button className="profileBtn" onClick={()=>{router.push('/user/'+authSelector?.userInfo?.data?.data?._id)}}>
             <Image src={images.paitentIcon} className='me-2' alt='paitentImg'/>
             <span>Profile</span>
-          </button></Link> 
+          </button>}
          
           {/* <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             <li><button className="dropdown-item" onClick={handleLogout}><i className="fa-solid fa-right-from-bracket me-2"></i> Logout</button></li>
