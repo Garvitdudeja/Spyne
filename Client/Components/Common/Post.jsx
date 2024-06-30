@@ -44,7 +44,7 @@ const Post = (props) => {
   return (
     <div className="card mb-3 position-relative">
       {/* Delete Icon */}
-     {props?.isClient && (authSelector?.userInfo?.data?.data?._id==data?.userId?._id ||authSelector?.userInfo?.data?.data?._id==data?.userId) && <button
+     {  (authSelector?.userInfo?.data?.data?._id==data?.userId?._id ||authSelector?.userInfo?.data?.data?._id==data?.userId) && <button
         className="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2"
         onClick={() => {
           handlePostDelete(data?._id);
@@ -72,13 +72,13 @@ const Post = (props) => {
         <p>{data?.message}</p>
 
         {Array.isArray(data?.images) && data?.images.length > 0 && (
-          <div className="row row-cols-2 row-cols-md-3 g-3">
+          <div className="row row-cols-2 row-cols-md-3 g-3 text-center">
             {data?.images.map((item, index) => (
               <div key={index} className="col">
                 <Image
                   src={item}
-                  height={50}
-                  width={50}
+                  height={200}
+                  width={200}
                   className="img-fluid rounded"
                 />
               </div>

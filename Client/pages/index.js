@@ -5,10 +5,13 @@ import { getDashboard } from "@/redux/slices/web";
 import Post from "@/Components/Common/Post";
 import CustomModal from "@/Components/Common/CustomModal";
 import NewPost from "@/Components/Modals/NewPost";
+import * as images from "@/utilities/images";
+import Image from "next/image";
 
 const Dashboard = (props) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
+  const [filter, setFilter] = useState({page: 1, limit:10})
   const [modalDetail, setModalDetail] = useState({
     show: false,
     title: "",
@@ -17,13 +20,23 @@ const Dashboard = (props) => {
   });
   const [key, setKey] = useState(Math.random());
 
-  useEffect(() => {
+  const getDashboardAction = (filter)=>{
+    const params = {
+      ...filter
+    }
     dispatch(
-      getDashboard({
+      getDashboard({...params,
         cb: (res) => setData(res?.data),
       })
     );
-  }, []);
+  }
+
+
+
+
+  useEffect(() => {
+   getDashboardAction(filter)
+  }, [filter]);
 
   const handleAddPostModal = () => {
     setModalDetail({
@@ -50,11 +63,42 @@ const Dashboard = (props) => {
     });
   };
 
+
+
   return (
     <>
       <div className="container mt-3">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="heading20 mb-0">Overview</h2>
+
+          <form>
+                <div className="customerSearch">
+                  <Image
+                    src={images.searchIcon}
+                    alt="icon"
+                    className="customerSearchIcon"
+                  />
+                  <input
+                    type="search"
+                    onChange={e=>{setFilter(prev=>({...prev,search:e.target.value}))}}
+                    placeholder="Search here.."
+                    className="customerSearchInput"
+                  />
+                  <Image
+                    src={images.crossIcon}
+                    alt="icon"
+                    onClick={() =>
+                      setFilter((prev) => ({
+                        ...prev,
+                        search: "",
+                        page: 1,
+                        limit: 10,
+                      }))
+                    }
+                    className="customerCrossIcon"
+                  />
+                </div>
+              </form>
           <button className="btn btn-primary ms-3" onClick={handleAddPostModal}>
             Add Post
           </button>
