@@ -1,10 +1,11 @@
 import PostsModel from "../models/Posts.js";
 import LikesModel from "../models/Likes.js";
 import CommentModel from "../models/Comment.js";
+import TagsModel from "../models/tags.js";
 
 const addPost = async (req, res) => {
   try {
-    const { message, images } = req.body;
+    const { message, images, tags } = req.body;
     if (!message) {
       return res.status(400).json({ error: "Add Message to the Post!" });
     }
@@ -13,7 +14,10 @@ const addPost = async (req, res) => {
       userId,
       message,
       images,
+      tags,
     });
+    const tagsList = tags.map((item) => ({ postId: post._id, tag: item }));
+    const tagsResponse = await TagsModel.create(tagsList);
     await post.populate("userId");
     return res.status(200).json(post);
   } catch (error) {
@@ -158,6 +162,40 @@ const getAllPost = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+
+const searchWithTag = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search = "" } = req.query;
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    const searchQuery = search
+      ? { tag: { $regex: search, $options: "i" } }
+      : {};
+
+    const userData = await TagsModel.find(searchQuery)
+      .populate({
+        path: "postId",  // Assuming postId is the field referencing Posts model
+        model: "Posts",  // Name of the model to populate
+        options: { sort: { createdAt: -1 }, skip: (pageNumber - 1) * limitNumber, limit: limitNumber }
+      });
+
+    const totalPosts = await TagsModel.countDocuments(searchQuery);
+    const totalPages = Math.ceil(totalPosts / limitNumber);
+
+    return res.status(200).json({
+      data: userData,
+      totalPosts,
+      totalPages,
+      currentPage: pageNumber,
+      pageSize: limitNumber,
+    });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+
 export {
   addPost,
   LikePost,
@@ -168,4 +206,5 @@ export {
   commentOnComment,
   LikeComment,
   getAllPost,
+  searchWithTag,
 };

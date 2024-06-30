@@ -1,8 +1,5 @@
 import express from "express";
 import Auth from "../middleware/Auth.js";
-import PostsModel from "../models/Posts.js";
-import LikesModel from "../models/Likes.js";
-import CommentModel from "../models/Comment.js";
 import {
   LikeComment,
   LikePost,
@@ -13,6 +10,7 @@ import {
   dislikePost,
   getAllPost,
   getPostById,
+  searchWithTag,
 } from "../Controller/posts.controller.js";
 
 const router = express.Router();
@@ -37,5 +35,8 @@ router.post("/comment", Auth, commentOnComment);
 router.post("/comment/like", Auth, LikeComment);
 
 router.get("/post", Auth, getAllPost);
+
+//search with Tag
+router.get("/post/search/tag", Auth, searchWithTag);
 
 export default router;
