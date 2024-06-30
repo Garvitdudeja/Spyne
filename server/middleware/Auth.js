@@ -13,7 +13,7 @@ const Auth = async(req, res, next) => {
   try {
     const Authorization = req.headers.authorization;
     const cookieData = req.headers.cookie
-      ? req.headers.cookie.split("=")[1]
+      ? req.headers?.cookie.split("=")[1]
       : null;
     const data = jwt.decode(
       cookieData ?? Authorization,
