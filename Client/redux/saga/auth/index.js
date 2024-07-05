@@ -40,7 +40,8 @@ function* userSignUp(action) {
       (action.payload = action.payload)
     );
    
-    if (resp.status) {
+    if (resp?.status == 200) {
+      console.log(resp)
       resp.data.email = action.payload.email
       localStorage.setItem("adminAuthToken", resp?.data?.data?.token ?? "")
       yield put(setUserLogin(resp));

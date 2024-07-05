@@ -110,7 +110,7 @@ const CustomerView = (props) => {
             </div>
           </div>
           <div className="customerBtns">
-            {authSelector?.userInfo?.data?.data?._id == data?._id && (
+            {props?.isClient && authSelector?.userInfo?.data?.data?._id == data?._id && (
               <>
                 <button
                   className="editBtnRounded me-2"

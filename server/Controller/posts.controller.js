@@ -152,8 +152,21 @@ const getAllPost = async (req, res) => {
     const totalPosts = await PostsModel.countDocuments(searchQuery);
     const totalPages = Math.ceil(totalPosts / limitNumber);
 
+    // Fetch likes for each post
+    const postIds = userData.map(post => post._id);
+    const likesPromises = postIds.map(postId =>
+      LikesModel.find({ postId, userId: req?.user?.userId })
+    );
+    const likesResults = await Promise.all(likesPromises);
+
+    // Add likes data to userData
+    const userDataWithLikes = userData.map((post, index) => ({
+      ...post.toObject(),
+      likes: likesResults[index]  // Attach likes array to each post
+    }));
+
     return res.status(200).json({
-      data: userData,
+      data: userDataWithLikes,
       totalPosts,
       totalPages,
       currentPage: pageNumber,
@@ -163,6 +176,7 @@ const getAllPost = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+
 
 const searchWithTag = async (req, res) => {
   try {
@@ -202,6 +216,7 @@ const searchWithTag = async (req, res) => {
     ];
 
     const postsData = await TagsModel.aggregate(aggregationPipeline);
+
 
     const totalPosts = await TagsModel.countDocuments(searchQuery);
     const totalPages = Math.ceil(totalPosts / limitNumber);

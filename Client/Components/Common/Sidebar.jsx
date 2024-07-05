@@ -22,7 +22,7 @@ const Sidebar = (props) => {
   }
     const pathname = usePathname()
     const sidebarList = [
-    {name:"Home", activeImage: images.homeActive, inactiveImage: images.homeIcon, path:"/"},
+    {name:"Home", activeImage: images.homeActive, inactiveImage: images.homeIcon, path:"/dashboard"},
     // {name:"Shift Requests", activeImage: images.shiftActive, inactiveImage: images.shiftRequestIcon, path:"/shift-request"},
     // {name:"Shift", activeImage: images.shiftActive, inactiveImage: images.shiftRequestIcon, path:"/shift"},
     // {name:"Jobs", activeImage: images.shiftActive, inactiveImage: images.shiftRequestIcon, path:"/job"},

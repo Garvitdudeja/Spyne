@@ -26,6 +26,7 @@ const App = ({ Component, pageProps }) => {
     return () => clearTimeout(delay); // Clear the timeout if the component unmounts
   }, []);
 
+  console.log(authSelector?.isLoggedIn)
 if(loading){
   return <></>
 }

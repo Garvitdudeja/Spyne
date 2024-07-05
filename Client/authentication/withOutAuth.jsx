@@ -11,7 +11,7 @@ export default function withOutAuth(Component) {
     useEffect(() => {
       async function checkAuth() {
         if (userInfo && Object.keys(userInfo).length > 0 && isLoggedIn) {
-          router.push("/");
+          router.push("/dashboard");
         }
       }
       checkAuth();

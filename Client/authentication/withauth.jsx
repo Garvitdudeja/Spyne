@@ -10,7 +10,8 @@ export default function withAuth(Component,type) {
     useEffect(() => {
       async function checkAuth() {
         if (!userInfo || !isLoggedIn) {
-          router.push("/login");
+          console.log("111111111111111")
+          router.push("/");
         }
       }
       checkAuth();
