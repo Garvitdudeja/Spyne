@@ -2,20 +2,24 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuthSelector } from "@/redux/selector/auth";
 
-export default function withAuth(Component,type) {
+export default function withAuth(Component, type) {
   return function WithAuth(props) {
     const authSelector = useAuthSelector();
-    var { userInfo, isLoggedIn } = authSelector;
+    const { userInfo, isLoggedIn } = authSelector;
+    const userData = window.localStorage.getItem("adminAuthToken");
+
     const router = useRouter();
+
     useEffect(() => {
-      async function checkAuth() {
-        if (!userInfo || !isLoggedIn) {
-          console.log("111111111111111")
-          router.push("/");
-        }
+      if (!userInfo || !isLoggedIn || !userData) {
+        router.push("/");
       }
-      checkAuth();
-    }, []);
+    }, [userInfo, isLoggedIn, userData]);
+
+    if (!userInfo || !isLoggedIn || !userData) {
+      return null;
+    }
+
     return <Component {...props} />;
   };
 }

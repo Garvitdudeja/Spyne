@@ -42,8 +42,8 @@ const SignUp = (props) => {
         ...params,
         cb(res) {
           if (res.status == 200) {
-            console.log(res)
-            router.push("/dashboard");
+            console.log(res,"ressssssssss")
+            // router.push("/dashboard");
           }
         },
       })

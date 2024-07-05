@@ -6,16 +6,15 @@ export default function withOutAuth(Component) {
   return function WithAuth(props) {
     const authSelector = useAuthSelector();
     const { userInfo, isLoggedIn } = authSelector;
-    
     const router = useRouter();
+
     useEffect(() => {
-      async function checkAuth() {
-        if (userInfo && Object.keys(userInfo).length > 0 && isLoggedIn) {
-          router.push("/dashboard");
-        }
+      const userData = window.localStorage.getItem("adminAuthToken");
+      if (isLoggedIn && userInfo && userData) {
+        router.push("/dashboard");
       }
-      checkAuth();
-    }, []);
-    return <Component {...props} />;
+    }, [isLoggedIn, userInfo]);
+
+    return isLoggedIn && userInfo ? null : <Component {...props} />;
   };
 }

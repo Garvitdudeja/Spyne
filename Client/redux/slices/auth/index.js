@@ -51,6 +51,8 @@ export const authSlice = createSlice({
     },
     onErrorStopLoad: (state) => {
       state.loading = false;
+    state.isLoggedIn= false
+
     },
   },
 });

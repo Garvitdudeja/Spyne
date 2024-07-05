@@ -2,6 +2,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/Users.js";
 
+
+
+const checkUserAlreadyExist = async(data) =>{
+  const user =  await UserModel.findOne({$or: [{email: data.email},{ phoneNumber: data.phoneNumber}]})
+  return user ? true : false;
+}
+
 const userSignUp = async (req, res) => {
     try {
       const { userName, password, phoneNumber, email, image } = req.body;
@@ -12,6 +19,9 @@ const userSignUp = async (req, res) => {
   
       const Salt = await bcrypt.genSalt(8);
       const hashedPassword = await bcrypt.hash(password, Salt);
+      if( await checkUserAlreadyExist({email, phoneNumber})){
+      return res.status(400).json({ error: "User Alreadty Exist" });
+      }
       const user = await UserModel.create({
         userName: userName,
         password: hashedPassword,
